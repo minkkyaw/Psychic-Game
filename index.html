@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Psychic-game</title>
+
+    <style>
+    .button {
+        padding: 10px;
+        font-size: 1rem; 
+        border-radius: 5px;
+    }
+
+    .button:focus {
+        outline: none;
+    }
+    </style>
+</head>
+<body>
+    <h1>The Psychic Game</h1>
+    <p>Guess what letter I'm thinking of</p>
+    <p>Wins: <span id="wins"></span></p>
+    <p>Losses: <span id="losses"></span></p>
+    <p>Guesses Left: <span id="guesses-left"></span></p>
+    <p>already guess: <span id="already-guess"></span></p>
+    <button class="button" onclick="giveup()">What is the letter?</button>
+
+    <script>
+        let lettersToGuess = [];
+
+        for(let i = 97; i < 123; i++) {
+            lettersToGuess.push(String.fromCharCode(i));
+        }
+
+        let random = Math.floor(Math.random()*26);
+        let randomLetter = lettersToGuess[random];
+        let winScore = 0;
+        let lossScore = 0;
+        let guessLeft = 9;
+        let alreadyGuess = [];
+        const wins_span = document.getElementById("wins");
+        const losses_span = document.getElementById("losses");
+        const guessesLeft_span = document.getElementById("guesses-left");
+        const alreadyGuess_span = document.getElementById("already-guess");
+        
+        function giveup() {
+            let confirm = window.confirm(`If you say "OK", you'er gonna lose!`);
+            if(confirm) {
+                alert(`You lost! The letter I'm thinking of is "${randomLetter}"`);
+            } else {
+                alert(`You can guess it!`);
+            }
+        }
+
+        function dom() {
+            wins_span.innerHTML = winScore;
+            losses_span.innerHTML = lossScore;
+            guessesLeft_span.innerHTML = guessLeft;
+            alreadyGuess_span.innerHTML = alreadyGuess;
+        }
+
+        dom();
+        
+        function win() {
+            winScore++;
+            alert(`You win! The letter I'm thinking of is "${randomLetter}"`);
+            guessLeft = 9;
+            random = Math.floor(Math.random()*26);
+            randomLetter = lettersToGuess[random];
+            alreadyGuess = [];           
+        }
+
+        function loss() {
+            if(guessLeft === 0) {
+                alert(`You lost! The letter I'm thinking of is "${randomLetter}"`);
+                guessLeft = 9;
+                lossScore++;
+                random = Math.floor(Math.random()*26);
+                randomLetter = lettersToGuess[random];    
+            }
+        }
+
+        document.onkeyup = e => {
+                if(lettersToGuess.indexOf(e.key) !== -1) {
+                    if(e.key === randomLetter) {
+                        win();
+                    } else {
+                        guessLeft--;
+                        alreadyGuess.push(e.key); 
+                        loss();  
+                    }
+                } else {
+                    alert(`Press the letter of a-z`);
+                }          
+                dom();
+        }    
+    </script>
+</body>
+</html>
